@@ -1,54 +1,32 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:loginpage/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loginpage/home_screen.dart';
+import 'package:loginpage/main.dart';
 import 'package:loginpage/reusable_Widgets/reuseable.dart';
-import 'package:loginpage/sign_up.dart';
-import 'utils/colors.dart';
+import 'package:loginpage/utils/colors.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  TextEditingController _emailTextController = TextEditingController();
-  TextEditingController _passwordTextController = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
+    TextEditingController _passwordTextController = TextEditingController();
+    TextEditingController _emailTextController = TextEditingController();
+    TextEditingController _usernameTextController = TextEditingController();
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: const Text(
+          "Signup",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.transparent,
+      ),
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(colors: [
@@ -60,12 +38,13 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.account_circle, size: 90.0, color: Colors.white),
+              reusableTextField("Name", Icons.person_2_outlined, false,
+                  _usernameTextController),
               const SizedBox(
-                height: 10.0,
+                height: 10,
               ),
-              reusableTextField("Username or Email", Icons.person_2_outlined,
-                  false, _emailTextController),
+              reusableTextField("Email", Icons.person_2_outlined, false,
+                  _emailTextController),
               const SizedBox(
                 height: 10,
               ),
@@ -77,10 +56,11 @@ class _MyHomePageState extends State<MyHomePage> {
               ElevatedButton(
                 onPressed: () {
                   FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
+                      .createUserWithEmailAndPassword(
                           email: _emailTextController.text,
                           password: _passwordTextController.text)
                       .then((value) {
+                    print("Created New Account");
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -93,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     // Set the background color of the button
                     ),
                 child: const Text(
-                  "Login",
+                  "Signup",
                   style: TextStyle(
                     color: Colors
                         .white, // Set the text color to white or any other desired color
@@ -106,17 +86,19 @@ class _MyHomePageState extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Don't have account?",
+                  const Text("Already have an account?",
                       style: TextStyle(color: Colors.white70)),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const SignUpScreen()));
+                              builder: (context) => const MyHomePage(
+                                    title: 'HomePage',
+                                  )));
                     },
                     child: const Text(
-                      " Sign Up",
+                      " Login ",
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
