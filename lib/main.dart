@@ -1,15 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:loginpage/firebase_options.dart';
-import 'package:loginpage/home_screen.dart';
+import 'package:loginpage/Home_Page.dart';
 import 'package:loginpage/reusable_Widgets/reuseable.dart';
 import 'package:loginpage/sign_up.dart';
 import 'utils/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-        useMaterial3: true,
+        useMaterial3: false,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -44,6 +45,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String errorMessage = "";
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   @override
@@ -74,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(
                 height: 10,
               ),
+              showError(),
               ElevatedButton(
                 onPressed: () {
                   FirebaseAuth.instance
@@ -81,10 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           email: _emailTextController.text,
                           password: _passwordTextController.text)
                       .then((value) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
                   }).onError((error, stackTrace) {
                     print("Error ${error.toString()}");
                   });
@@ -94,12 +95,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                 child: const Text(
                   "Login",
-                  style: TextStyle(
-                    color: Colors
-                        .white, // Set the text color to white or any other desired color
-                  ),
+                  style: TextStyle(color: Colors.black),
                 ),
               ),
+              // showError(),
               const SizedBox(
                 height: 10,
               ),
@@ -129,5 +128,24 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Widget showError() {
+    return errorMessage.isNotEmpty
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              errorMessage,
+              style: const TextStyle(
+                color: Colors.yellow, // Set the color of the error message
+              ),
+            ),
+          )
+        : Container();
+    // Return an empty container if the error message is empty
+  }
+
+  Widget removeError() {
+    return Container();
   }
 }

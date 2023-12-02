@@ -17,16 +17,16 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -49,20 +49,23 @@ class DefaultFirebaseOptions {
     }
   }
 
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCh5kdrxC3WYHFC1_x6ZIn5G1n9HJJcbhk',
+    appId: '1:198212591560:web:3c7086c469b0bb3ace2afd',
+    messagingSenderId: '198212591560',
+    projectId: 'login-and-signup-e2735',
+    authDomain: 'login-and-signup-e2735.firebaseapp.com',
+    databaseURL: 'https://login-and-signup-e2735-default-rtdb.firebaseio.com',
+    storageBucket: 'login-and-signup-e2735.appspot.com',
+    measurementId: 'G-1J1SYSYWDE',
+  );
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDSVBm3p6UDXa9Q2d-kJSdWHiYwrnvCzSg',
     appId: '1:198212591560:android:1995f5a33a6e16fcce2afd',
     messagingSenderId: '198212591560',
     projectId: 'login-and-signup-e2735',
+    databaseURL: 'https://login-and-signup-e2735-default-rtdb.firebaseio.com',
     storageBucket: 'login-and-signup-e2735.appspot.com',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBMtLcQl_5LmBZJmdz-HLmG8u5IpT8NIB4',
-    appId: '1:198212591560:ios:66fea8f865bd838dce2afd',
-    messagingSenderId: '198212591560',
-    projectId: 'login-and-signup-e2735',
-    storageBucket: 'login-and-signup-e2735.appspot.com',
-    iosBundleId: 'com.example.loginpage',
   );
 }

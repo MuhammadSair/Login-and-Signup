@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:loginpage/home_screen.dart';
+import 'package:loginpage/Home_Page.dart';
 import 'package:loginpage/main.dart';
 import 'package:loginpage/reusable_Widgets/reuseable.dart';
 import 'package:loginpage/utils/colors.dart';
@@ -55,16 +56,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  var username = _usernameTextController.text.trim();
+                  var email = _emailTextController.text.trim();
+                  var password = _passwordTextController.text.trim();
                   FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
                           email: _emailTextController.text,
                           password: _passwordTextController.text)
                       .then((value) {
                     print("Created New Account");
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()));
+                    FirebaseFirestore.instance.collection("users").doc().set({
+                      'username': username,
+                      'email': email,
+                      'dateCreated': DateTime.now()
+                    });
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
                   }).onError((error, stackTrace) {
                     print("Error ${error.toString()}");
                   });
@@ -76,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   "Signup",
                   style: TextStyle(
                     color: Colors
-                        .white, // Set the text color to white or any other desired color
+                        .black, // Set the text color to white or any other desired color
                   ),
                 ),
               ),
