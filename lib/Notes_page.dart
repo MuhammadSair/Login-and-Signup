@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:loginpage/Home_Page.dart';
 
 class Notes extends StatefulWidget {
   const Notes({super.key});
@@ -9,19 +10,47 @@ class Notes extends StatefulWidget {
 }
 
 class _NotesState extends State<Notes> {
+  final TextEditingController _noteController = TextEditingController();
+  User? userId = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Create Notes"),
+        title: const Text("Create Notes"),
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
-          },
-          backgroundColor: Colors.red.shade900,
-          child: Icon(Icons.add)),
+      body: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            TextField(
+              maxLines: null,
+              controller: _noteController,
+              decoration: const InputDecoration(hintText: ("Note")),
+            ),
+            ElevatedButton(
+                onPressed: () async {
+                  var note = _noteController.text.trim();
+                  if (note != "") {
+                    try {
+                      await FirebaseFirestore.instance
+                          .collection("notes")
+                          .doc()
+                          .set({
+                        "createdAt": DateTime.now(),
+                        "note": note,
+                        "userId": userId?.uid,
+                      });
+                      // _noteController.clear();
+                    } catch (e) {
+                      print(e.toString());
+                    }
+                  }
+                },
+                child: const Text("Create"))
+          ],
+        ),
+      ),
     );
   }
 }

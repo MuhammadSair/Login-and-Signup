@@ -91,11 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                    // Set the background color of the button
-                    ),
+                  backgroundColor:
+                      Colors.purple, // Set the background color of the button
+                ),
                 child: const Text(
                   "Login",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
               // showError(),
