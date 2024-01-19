@@ -41,6 +41,10 @@ dependencies:
   firebase_database: ^10.3.6
   cloud_firestore: ^4.13.3
   firebase_storage: ^11.5.3
+  get: ^4.6.6
+  firebase_messaging: ^14.7.8
+  shared_preferences: ^2.2.2
+  google_mobile_ads: ^4.0.0
 
 dev_dependencies:
   flutter_test:

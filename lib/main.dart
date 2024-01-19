@@ -1,19 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
+// https://github.com/googleads/googleads-mobile-flutter/blob/main/samples/admob/interstitial_example/lib/main.dart
 // import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:loginpage/adds.dart';
+import 'package:loginpage/firebase_api.dart';
 import 'package:loginpage/firebase_options.dart';
 import 'package:loginpage/Home_Page.dart';
+import 'package:loginpage/interstitical.dart';
 import 'package:loginpage/reusable_Widgets/reuseable.dart';
 import 'package:loginpage/sign_up.dart';
 import 'utils/colors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseApi().initNotifications();
   runApp(const MyApp());
 }
 
@@ -23,7 +31,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -102,6 +110,29 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               // showError(),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BannerExample()));
+                  },
+                  child: Text("Ads")),
+
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const InterstitialExample()));
+                  },
+                  child: Text("Ads")),
               const SizedBox(
                 height: 10,
               ),

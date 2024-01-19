@@ -5,7 +5,9 @@ import 'package:firebase_database/firebase_database.dart';
 // import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:loginpage/Notes_page.dart';
+import 'package:loginpage/edit_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,8 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final ref = FirebaseDatabase.instance.ref("Post");
-  final ref2 = FirebaseDatabase.instance.ref("notes");
+  // final ref = FirebaseDatabase.instance.ref("Post");
+  // final ref2 = FirebaseDatabase.instance.ref("notes");
   User? userId = FirebaseAuth.instance.currentUser;
 
   @override
@@ -41,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                     return const Center(child: CupertinoActivityIndicator());
                   }
                   if (snapshot.data!.docs.isEmpty) {
-                    return const Text("No data found");
+                    return const Center(child: Text("No data found"));
                   }
                   if (snapshot.data != null) {
                     return ListView.builder(
@@ -49,10 +51,44 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         var noteData = snapshot.data!.docs[index].data()
                             as Map<String, dynamic>;
+                        var editNote = snapshot.data!.docs[index].data();
                         var noteText = noteData["note"];
+
+                        // var noteTime = noteData["createdAt"].toString();
+                        var userId = noteData["userId"];
+                        var docId = snapshot.data!.docs[index].id;
+
                         return Card(
                           child: ListTile(
                             title: Text(noteText ?? ""),
+                            // subtitle: Text(noteTime),
+                            // subtitle: Text(userId ?? ""),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Get.to(() => const EditNote(), arguments: {
+                                      "notes": noteData,
+                                      "docId": docId,
+                                    });
+                                  },
+                                  child: const Icon(Icons.edit),
+                                ),
+                                const SizedBox(
+                                  width: 10.0,
+                                ),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await FirebaseFirestore.instance
+                                        .collection("notes")
+                                        .doc(docId)
+                                        .delete();
+                                  },
+                                  child: const Icon(Icons.delete),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
