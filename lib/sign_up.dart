@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loginpage/Home_Page.dart';
@@ -16,9 +17,10 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController _passwordTextController = TextEditingController();
-    TextEditingController _emailTextController = TextEditingController();
-    TextEditingController _usernameTextController = TextEditingController();
+    TextEditingController passwordTextController = TextEditingController();
+    TextEditingController emailTextController = TextEditingController();
+    TextEditingController usernameTextController = TextEditingController();
+    User? userId = FirebaseAuth.instance.currentUser;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -40,40 +42,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               reusableTextField("Name", Icons.person_2_outlined, false,
-                  _usernameTextController),
+                  usernameTextController),
               const SizedBox(
                 height: 10,
               ),
-              reusableTextField("Email", Icons.person_2_outlined, false,
-                  _emailTextController),
+              reusableTextField(
+                  "Email", Icons.person_2_outlined, false, emailTextController),
               const SizedBox(
                 height: 10,
               ),
-              reusableTextField("Password", Icons.lock_outline, true,
-                  _passwordTextController),
+              reusableTextField(
+                  "Password", Icons.lock_outline, true, passwordTextController),
               const SizedBox(
                 height: 10,
               ),
               ElevatedButton(
                 onPressed: () {
-                  var username = _usernameTextController.text.trim();
-                  var email = _emailTextController.text.trim();
-                  var password = _passwordTextController.text.trim();
+                  var username = usernameTextController.text.trim();
+                  var email = emailTextController.text.trim();
+                  // var password = _passwordTextController.text.trim();
                   FirebaseAuth.instance
                       .createUserWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
+                          email: emailTextController.text,
+                          password: passwordTextController.text)
                       .then((value) {
-                    print("Created New Account");
-                    FirebaseFirestore.instance.collection("users").doc().set({
+                    // print("Created New Account");
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(userId?.uid)
+                        .set({
                       'username': username,
                       'email': email,
-                      'dateCreated': DateTime.now()
+                      'dateCreated': DateTime.now(),
+                      "userId": userId?.uid,
                     });
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()));
                   }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
+                    // print("Error ${error.toString()}");
                   });
                 },
                 style: ElevatedButton.styleFrom(

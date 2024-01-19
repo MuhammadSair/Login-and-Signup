@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+// import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loginpage/Notes_page.dart';
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
                     .snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
-                    return Text("Something went wrong!");
+                    // return Text("Something went wrong!");
                   }
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CupertinoActivityIndicator());
@@ -47,9 +47,12 @@ class _HomePageState extends State<HomePage> {
                     return ListView.builder(
                       itemCount: snapshot.data?.docs.length,
                       itemBuilder: (context, index) {
+                        var noteData = snapshot.data!.docs[index].data()
+                            as Map<String, dynamic>;
+                        var noteText = noteData["note"];
                         return Card(
                           child: ListTile(
-                            title: Text(snapshot.data!.docs[index]["notes"]),
+                            title: Text(noteText ?? ""),
                           ),
                         );
                       },
@@ -63,7 +66,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: () => {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Notes(),
+                    builder: (context) => const Notes(),
                   ),
                 )
               },
